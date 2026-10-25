@@ -1,0 +1,20 @@
+# Бесплатный web-сервис Render.
+# Dashboard → Blueprints → New Blueprint Instance → репозиторий shcheben-go.
+#
+# Бесплатный план не даёт постоянный диск: SQLite живёт в /tmp и обнуляется
+# при рестарте/деплое. Демо-данные создаются заново при старте.
+services:
+  - type: web
+    name: shcheben-go
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+      - key: SHCHEBEN_DB
+        value: /tmp/shcheben_go.db
